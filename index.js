@@ -1,10 +1,22 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import pool from './db.js';
+import multer from 'multer';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const corsOptions = { origin: process.env.URL || '*' };
+
+//image
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({storage: storage});
 
 app.use(cors(corsOptions));
 app.use(json());
@@ -14,11 +26,16 @@ app.get('/', async(req, res)=>{
     console.log('Hello');
 });
 // create a table
-app.post("/products", async(req, res)=>{
+app.post("/products", upload.single('productImage'), async(req, res)=>{
+  console.log(req.file);
     try {
       // console.log(req.body);
       const{name, description, price, stars, location, created_at, updated_at, type_id} = req.body;
-      const newProduct = await pool.query("INSERT INTO product (name, description, price, stars, location, created_at, updated_at, type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [name, description, price, stars, location, created_at, updated_at, type_id]);
+      const img = req.file.destination + req.file.filename;
+
+      console.log(img);
+
+      const newProduct = await pool.query("INSERT INTO product (name, description, price, stars, img, location, created_at, updated_at, type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [name, description, price, stars, img, location, created_at, updated_at, type_id]);
       res.json(newProduct.rows[0]);
     } catch (err) {
       console.error(err.message);

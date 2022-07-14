@@ -9,6 +9,7 @@ CREATE TABLE product(
     description VARCHAR,
     price SMALLINT,
     stars SMALLINT,
+    img VARCHAR,
     location VARCHAR(255),
     created_at VARCHAR(255),
     updated_at VARCHAR(255),
