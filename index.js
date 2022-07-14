@@ -34,6 +34,7 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
       const img = req.file.destination + req.file.filename;
 
       console.log(img);
+      console.log(description);
 
       const newProduct = await pool.query("INSERT INTO product (name, description, price, stars, img, location, created_at, updated_at, type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [name, description, price, stars, img, location, created_at, updated_at, type_id]);
       res.json(newProduct.rows[0]);
