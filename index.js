@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 app.use(cors(corsOptions));
+app.use('/uploads/',express.static('uploads'));
 app.use(json());
 
 //ROUTES
@@ -31,7 +32,8 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
     try {
       // console.log(req.body);
       const{name, description, price, stars, location, created_at, updated_at, type_id} = req.body;
-      const img = req.file.destination + req.file.filename;
+      // const img = req.file.destination + req.file.filename;
+      const img = req.file.path;
 
       console.log(img);
       console.log(description);
