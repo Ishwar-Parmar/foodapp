@@ -67,12 +67,12 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
   });
   
   //update a product
-  app.put("/products/:id", async(req, res)=>{
+  app.put("/products/:id",upload.single('productImage'), async(req, res)=>{
     try {
       const { id } = req.params;
-      const {description} = req.body;
+      const img = req.file.path;
       
-      const updateProd = await pool.query("UPDATE product SET description = $1 WHERE product_id = $2", [description, id]);
+      const updateProd = await pool.query("UPDATE product SET img = $1 WHERE product_id = $2", [img, id]);
       res.json("Product Updated");
       
     } catch (error) {
