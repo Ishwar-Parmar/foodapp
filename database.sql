@@ -2,7 +2,7 @@ CREATE DATABASE foodproduct;
 
 
 --\c into foodproduct
-
+-- product table
 CREATE TABLE product(
     product_id SERIAL PRIMARY KEY,
     name VARCHAR(255),
@@ -15,5 +15,9 @@ CREATE TABLE product(
     updated_at VARCHAR(255),
     type_id SMALLINT
 );
+
+-- cart table
+CREATE TABLE 
+
 
 --heroku pg:psql
