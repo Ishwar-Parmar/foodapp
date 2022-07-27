@@ -35,7 +35,7 @@ app.use(json());
 
 //ROUTES
 app.get('/', async(req, res)=>{
-    console.log('Hello');
+    res.send("Food Apis");
 });
 
 //Paypal Integration
@@ -71,7 +71,6 @@ paypal.payment.create(create_payment_json, function (error, payment) {
   if (error) {
       throw error;
   } else {
-    console.log("create payment response");
     console.log(payment);
     // res.send('test');
       for(let i = 0;i < payment.links.length;i++){
@@ -123,6 +122,17 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
       res.json(newProduct.rows[0]);
     } catch (err) {
       console.error(err.message);
+    }
+  });
+
+  //Registration
+  app.post("/register", async(req, res)=>{
+    try {
+      const{f_name, phone, email, password}=req.body;
+      const newUser = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, password]);
+      res.json(newUser.rows[0]);
+    } catch (error) {
+      console.error(error.message);
     }
   });
   
