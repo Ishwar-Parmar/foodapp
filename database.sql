@@ -23,7 +23,7 @@ CREATE TABLE product(
 CREATE TABLE register(
     id SERIAL PRIMARY KEY,
     f_name VARCHAR(70),
-    phone INTEGER,
+    phone VARCHAR(12),
     email VARCHAR(100),
     password VARCHAR(100)
 );
