@@ -136,7 +136,7 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
           token 
         });
       });
-      res.json(newUser.rows[0]);
+      res.json(user.rows[0]);
     } catch (error) {
       console.error(error.message);
     }
