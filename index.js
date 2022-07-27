@@ -145,6 +145,15 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
       console.log(error.message);
     }
   });
+  //get all users
+  app.get('/products', async(req, res) => {
+    try {
+      const alluser = await pool.query("SELECT * FROM register");
+      res.json(alluser.rows);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
   
   //get a single product
   app.get('/products/:id', async(req, res)=> {
