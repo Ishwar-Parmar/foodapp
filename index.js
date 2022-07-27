@@ -4,6 +4,7 @@ import pool from './db.js';
 import multer from 'multer';
 // const paypal = require('paypal-rest-sdk');
 import paypal from 'paypal-rest-sdk';
+import jwt from 'jsonwebtoken';
 
 //Payment
 paypal.configure({
@@ -129,7 +130,12 @@ app.post("/products", upload.single('productImage'), async(req, res)=>{
   app.post("/register", async(req, res)=>{
     try {
       const{f_name, phone, email, password}=req.body;
-      const newUser = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, password]);
+      const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, password]);
+      jwt.sign({user}, 'secretkey',()=>{
+        res.json({
+          token 
+        });
+      });
       res.json(newUser.rows[0]);
     } catch (error) {
       console.error(error.message);
