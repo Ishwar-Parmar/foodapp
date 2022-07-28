@@ -187,7 +187,7 @@ app.post("/login",async (req, res)=>{
     console.error(err.message);
   }
 });
-
+//gh
 //get all products
 app.get('/products', async (req, res) => {
   try {
