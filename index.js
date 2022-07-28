@@ -164,9 +164,28 @@ app.post("/register", async (req, res) => {
 //     console.error(error.message);
 //   }
 // });
+//to check exist user
 
-//login 
-app.post("/login", (req, res)=>{
+
+//login
+app.post("/login",async (req, res)=>{
+  try {
+    const {email, password}= req.body;
+    const allEmails = await pool.query("SELECT * FROM register");
+    var success = false;
+    for (let index = 0; index < allEmails.rows.length; index++) {
+      if (allEmails.rows[index].email==email && allEmails.rows[index].password==password) {
+        success=true
+        // res.status(200).json(allEmails.rows[index]);
+        res.status(200).send("Succesfull");
+      }
+    }
+    if(success==false){
+      res.status(400).send("Invalid Credentials");
+    }
+  } catch (err) {
+    console.error(err.message);
+  }
 });
 
 //get all products

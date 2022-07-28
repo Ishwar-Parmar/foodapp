@@ -25,7 +25,7 @@ CREATE TABLE register(
     id SERIAL PRIMARY KEY,
     f_name VARCHAR(70),
     phone VARCHAR(12),
-    email VARCHAR(100),
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100)
 );
 
