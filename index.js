@@ -171,7 +171,7 @@ app.post("/register", async (req, res) => {
 app.post("/login",async (req, res)=>{
   try {
     const {email, password}= req.body;
-    const allEmails = await pool.query("SELECT * FROM register");
+    const allEmails = await pool.query("SELECT email,password FROM register");
     var success = false;
     for (let index = 0; index < allEmails.rows.length; index++) {
       if (allEmails.rows[index].email==email && allEmails.rows[index].password==password) {
