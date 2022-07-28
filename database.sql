@@ -2,6 +2,7 @@ CREATE DATABASE foodproduct;
 
 
 --\c into foodproduct
+--psql postgres
 -- product table
 CREATE TABLE product(
     product_id SERIAL PRIMARY KEY,
@@ -27,6 +28,10 @@ CREATE TABLE register(
     email VARCHAR(100),
     password VARCHAR(100)
 );
+
+-- alter table
+ALTER TABLE table_name
+ADD column_name datatype;
 
 -- cart table
 CREATE TABLE 

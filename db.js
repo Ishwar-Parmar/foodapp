@@ -9,6 +9,7 @@ const poolConfig = process.env.DATABASE_URL?{
 }:{
     user: 'postgres',
     password: 'I@1234',
+    
     database: 'foodproduct',
     host:'',
     port: 5432, 
