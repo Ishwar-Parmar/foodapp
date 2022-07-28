@@ -6,6 +6,7 @@ import multer from 'multer';
 import paypal from 'paypal-rest-sdk';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import 'dotenv';
 
 //Payment
 paypal.configure({
@@ -126,32 +127,43 @@ app.post("/products", upload.single('productImage'), async (req, res) => {
     console.error(err.message);
   }
 });
-
-//Registration
+// create user table
 app.post("/register", async (req, res) => {
   try {
     const { f_name, phone, email, password } = req.body;
-    if (!(email && password && f_name && phone)) {
-      res.status(400).send("All input is required");
-    }
-    const encryptedPassword=await bcrypt.hash(password,10);
-    const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, encryptedPassword]);
-
-    const token=jwt.sign(
-      {user_id: user._id, email},
-      process.env.TOKEN_KEY,
-      {
-        expiresIn: "2h",
-      }
-    );
-    user.token = token;
-
-    res.status(201).json(user);
-
-  } catch (error) {
-    console.error(error.message);
+    // const encryptedPassword=await bcrypt.hash(password,10);
+    const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, password]);
+    res.json(user.rows[0]);
+  } catch (err) {
+    console.error(err.message);
   }
 });
+
+//Registration
+// app.post("/register", async (req, res) => {
+//   try {
+//     const { f_name, phone, email, password } = req.body;
+//     if (!(email && password && f_name && phone)) {
+//       res.status(400).send("All input is required");
+//     }
+//     const encryptedPassword=await bcrypt.hash(password,10);
+//     const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, encryptedPassword]);
+
+//     const token=jwt.sign(
+//       {user_id: user._id, email},
+//       process.env.TOKEN_KEY,
+//       {
+//         expiresIn: "2h",
+//       }
+//     );
+//     user.token = token;
+
+//     res.status(201).json(user);
+
+//   } catch (error) {
+//     console.error(error.message);
+//   }
+// });
 
 //login 
 app.post("/login", (req, res)=>{
@@ -206,6 +218,18 @@ app.delete("/products/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const deleteProd = await pool.query("DELETE FROM product WHERE product_id = $1", [id]);
+    res.json("Product Deleted");
+
+  } catch (error) {
+    console.log(error.message);
+
+  }
+})
+// Delete a user
+app.delete("/register/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteProd = await pool.query("DELETE FROM register WHERE id = $1", [id]);
     res.json("Product Deleted");
 
   } catch (error) {
