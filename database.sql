@@ -1,6 +1,6 @@
 CREATE DATABASE foodproduct;
 
-
+--DELETE FROM
 --\c into foodproduct
 --psql postgres
 -- product table
