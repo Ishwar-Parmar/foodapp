@@ -171,7 +171,7 @@ app.post("/register", async (req, res) => {
 app.post("/login",async (req, res)=>{
   try {
     const {email, password}= req.body;
-    const allEmails = await pool.query("SELECT email,password FROM register");
+    const allEmails = await pool.query("SELECT* FROM register");
     var success = false;
     for (let index = 0; index < allEmails.rows.length; index++) {
       if (allEmails.rows[index].email==email && bcrypt.compareSync(password, allEmails.rows[index].password)) {
@@ -182,6 +182,8 @@ app.post("/login",async (req, res)=>{
 
         
         res.status(200).send({
+          f_name: allEmails.rows[index].f_name,
+          phone:allEmails.rows[index].phone,
           id: allEmails.rows[index].id,
           email:allEmails.rows[index].email,
           accessToken: token
