@@ -132,7 +132,7 @@ app.post("/register", async (req, res) => {
   try {
     const { f_name, phone, email, password } = req.body;
     // const encryptedPassword=await bcrypt.hash(password,10);
-    const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, password]);
+    const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, bcrypt.hashSync(req.body.password,8)]);
     res.json(user.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -174,10 +174,18 @@ app.post("/login",async (req, res)=>{
     const allEmails = await pool.query("SELECT email,password FROM register");
     var success = false;
     for (let index = 0; index < allEmails.rows.length; index++) {
-      if (allEmails.rows[index].email==email && allEmails.rows[index].password==password) {
-        success=true
-        // res.status(200).json(allEmails.rows[index]);
-        res.status(200).send("Succesfull");
+      if (allEmails.rows[index].email==email && bcrypt.compareSync(password, allEmails.rows[index].password)) {
+        success=true;
+        var token = jwt.sign({id:allEmails.rows[index].id}, "bezkober-secret-key", {
+          expiresIn: 86400
+        });
+
+        
+        res.status(200).send({
+          id: allEmails.rows[index].id,
+          email:allEmails.rows[index].email,
+          accessToken: token
+        });
       }
     }
     if(success==false){
