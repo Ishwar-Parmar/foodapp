@@ -2,7 +2,6 @@ import express, { json } from 'express';
 import cors from 'cors';
 import pool from './db.js';
 import multer from 'multer';
-// const paypal = require('paypal-rest-sdk');
 import paypal from 'paypal-rest-sdk';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -138,40 +137,12 @@ app.post("/register", async (req, res) => {
     console.error(err.message);
   }
 });
-
-//Registration
-// app.post("/register", async (req, res) => {
-//   try {
-//     const { f_name, phone, email, password } = req.body;
-//     if (!(email && password && f_name && phone)) {
-//       res.status(400).send("All input is required");
-//     }
-//     const encryptedPassword=await bcrypt.hash(password,10);
-//     const user = await pool.query("INSERT INTO register (f_name, phone, email, password) VALUES ($1, $2, $3, $4) RETURNING *", [f_name, phone, email, encryptedPassword]);
-
-//     const token=jwt.sign(
-//       {user_id: user._id, email},
-//       process.env.TOKEN_KEY,
-//       {
-//         expiresIn: "2h",
-//       }
-//     );
-//     user.token = token;
-
-//     res.status(201).json(user);
-
-//   } catch (error) {
-//     console.error(error.message);
-//   }
-// });
-//to check exist user
-
-
 //login
 app.post("/login",async (req, res)=>{
   try {
     const {email, password}= req.body;
     const allEmails = await pool.query("SELECT* FROM register");
+    console.log(allEmails.rows);
     var success = false;
     for (let index = 0; index < allEmails.rows.length; index++) {
       if (allEmails.rows[index].email==email && bcrypt.compareSync(password, allEmails.rows[index].password)) {
@@ -179,8 +150,6 @@ app.post("/login",async (req, res)=>{
         var token = jwt.sign({id:allEmails.rows[index].id}, "bezkober-secret-key", {
           expiresIn: 86400
         });
-
-        
         res.status(200).send({
           f_name: allEmails.rows[index].f_name,
           phone:allEmails.rows[index].phone,
@@ -197,7 +166,6 @@ app.post("/login",async (req, res)=>{
     console.error(err.message);
   }
 });
-//gh
 //get all products
 app.get('/products', async (req, res) => {
   try {
@@ -266,10 +234,6 @@ app.delete("/register/:id", async (req, res) => {
 
   }
 })
-
-
-// create 
-
 
 app.listen(PORT, () => {
   console.log(`Server is listening on: ${PORT}`);
